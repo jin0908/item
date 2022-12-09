@@ -51,12 +51,15 @@ class ItemController extends Controller
         //AWSへ画像保存
         //画像がある場合
         if ($request->hasFile('image')) {
-        $file = $request->file('image');
-        $path = Storage::disk('s3')->putFile('/', $file, 'public');
+        $image = $request->file('image');
+        //バケットの'todo_item'フォルダに保存   
+        $path = Storage::disk('s3')->putFile('todo_item', $image, 'public');
+        //画像のフルパスを取得
+        $image_path = Storage::disk('s3')->url($path);
         
         //画像がない場合
         }else{
-            $path = null;
+            $image_path = null;
         }
 
         //dd($path);
@@ -68,7 +71,7 @@ class ItemController extends Controller
                 'kana_name' => $request->kana_name,
                 'quantity' => $request->quantity,
                 'type' => $request->type,
-                'image' => $path,
+                'image_path' => $image_path,
                 'detail' => $request->detail,
             ]);
             
