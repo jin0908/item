@@ -52,17 +52,16 @@ class ItemController extends Controller
         //画像がある場合
         if ($request->hasFile('image')) {
         $image = $request->file('image');
-        //バケットの'todo_item'フォルダに保存   
+        //バケットの'todo_item'フォルダに保存
         $path = Storage::disk('s3')->putFile('todo_item', $image, 'public');
         //画像のフルパスを取得
         $image_path = Storage::disk('s3')->url($path);
+
         
         //画像がない場合
         }else{
-            $image_path = null;
+            $path = null;
         }
-
-        //dd($path);
 
             // 商品登録
             Item::create([
@@ -243,3 +242,5 @@ class ItemController extends Controller
     return redirect('/items');
     }
 }
+
+
