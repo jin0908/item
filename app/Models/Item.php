@@ -19,7 +19,7 @@ class Item extends Model
         'detail',
         'type',
         'detail',
-        'image',
+        'image_path',
 
     ];
 
