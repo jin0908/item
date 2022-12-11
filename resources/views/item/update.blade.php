@@ -53,7 +53,7 @@
                         <label for="image">画像(選択しない場合、現在の画像が再度表示されます)</label>
                         <div style="margin:20px;">
                             <div style="margin-left:10px;">現在の画像</div>
-                            <img src ="{{asset($item->image)}}" width="100"  style="border: solid 1px #777777;">
+                            <img src ="{{asset($item->image_path)}}" width="100"  style="border: solid 1px #777777;">
                         </div>
                         <input type="file" class="form-control" id="image" name="image" value="{{ $item->image }}">
                         </div>
