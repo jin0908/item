@@ -53,9 +53,9 @@ class ItemController extends Controller
         if ($request->hasFile('image')) {
         $image = $request->file('image');
         //バケットの'todo_item'フォルダに保存
-        $path = Storage::disk('s3')->putFile('todo_item', $image, 'public');
+        $image_path = Storage::disk('s3')->putFile('/', $image, 'public');
         //画像のフルパスを取得
-        $image_path = Storage::disk('s3')->url($path);
+        //$image_path = Storage::disk('s3')->url($path);
 
         //dd($path);
         //画像がない場合
@@ -171,28 +171,22 @@ class ItemController extends Controller
             
         ]);
 
-        // 新たな画像ファイルの文字列データ取得
-        $image = $request->file('image');
-        //バケットの'todo_item'フォルダに保存
-        $path = Storage::disk('s3')->putFile('todo_item', $image, 'public');
-        //画像のフルパスを取得
-        $image_path = Storage::disk('s3')->url($path);
-        
         //現在のファイルのデータを取得
         $item = Item::where('id', '=', $request->id)->first();
-        
-        //画像を変更する場合は現在のファイルを削除
-        //issetでNULL以外か確認
-        if (isset($image)) {
-        //s3のデータ削除のためurlを「/」で分ける
-        $path = explode("/",$item->image_path,5);
 
-        //ファイル文字列データを格納
-        $file_name = $path[4]; 
+        // 新たな画像ファイルの文字列データ取得
+        $image = $request->file('image');
+
+        //画像を変更する場合は現在のファイルを削除
+        //issetで新たな画像があるか確認
+        if(isset($image)){
+        
+        //s3に新たに画像を保存
+        $image_path = Storage::disk('s3')->putFile('/', $image, 'public');
 
         //s3の画像データを削除
-        Storage::disk('s3')->delete($file_name);
-    
+        Storage::disk('s3')->delete($image);
+
         }else{
             $image_path = $item->image_path;
         }
@@ -226,14 +220,14 @@ class ItemController extends Controller
         $item->delete();
     }else{
         //画像がある場合、s3のデータ削除のためurlを「/」で分ける
-        $path = explode("/",$item->image_path,5);
+        //$path = explode("/",$item->image_path,5);
         //dd($path);
         //ファイル文字列データを格納
-        $file_name = $path[4]; 
+        //$file_name = $path[4]; 
         //dd($file_name);
 
         //s3の画像データを削除
-        Storage::disk('s3')->delete($file_name);
+        Storage::disk('s3')->delete($item->image_path);
     
         //商品データを削除
         $item->delete();
