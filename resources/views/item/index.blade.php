@@ -54,8 +54,8 @@
                                 <th>個数</th>
                                 <th>種別</th>
                                 <th style = "padding-left: 45px;">画像</th>
-                                <th>登録日</th>
-                                <th>更新日</th>
+                                <th>初入荷日</th>
+                                <th>補充日</th>
                                 <th>詳細</th>                              
                             </tr>
                         </thead>
@@ -66,7 +66,7 @@
                                     <td>{{ $item->name }}</td>
                                     <td>{{ $item->quantity }}</td>
                                     <td>{{ config("type.$item->type") }}</td>
-                                    <td><img src ="{{ $item->image }}" class="img-responsive" width="100" style="border: solid 1px #777777;"></td>
+                                    <td><img src ="{{ $item->image_path }}" class="img-responsive" width="100" style="border: solid 1px #777777;"></td>
                                     <td>{{ date("Y-m-d", strtotime($item->created_at)) }}</td>
                                     <td>{{ date("Y-m-d", strtotime($item->updated_at)) }}</td>
                                     <td><a href="{{ url('items/edit/'.$item->id) }}">>>詳細・編集</a></td>

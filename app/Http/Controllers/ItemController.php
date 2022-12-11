@@ -60,7 +60,7 @@ class ItemController extends Controller
         //dd($path);
         //画像がない場合
         }else{
-            $path = null;
+            $image_path = null;
         }
 
             // 商品登録
@@ -173,26 +173,28 @@ class ItemController extends Controller
 
         // 新たな画像ファイルの文字列データ取得
         $image = $request->file('image');
+        //バケットの'todo_item'フォルダに保存
+        $path = Storage::disk('s3')->putFile('todo_item', $image, 'public');
+        //画像のフルパスを取得
+        $image_path = Storage::disk('s3')->url($path);
+        
         //現在のファイルのデータを取得
         $item = Item::where('id', '=', $request->id)->first();
         
-        //画像を変更する場合、現在のファイルを削除
+        //画像を変更する場合は現在のファイルを削除
+        //issetでNULL以外か確認
         if (isset($image)) {
-        Storage::disk('s3')->delete('todo_item', $image, 'public');
-        
-        // ディレクトリ名
-        $dir = 'image';
+        //s3のデータ削除のためurlを「/」で分ける
+        $path = explode("/",$item->image_path,5);
 
-        // アップロードされたファイル名を取得
-        $file_name = $request->file('image')->getClientOriginalName();
+        //ファイル文字列データを格納
+        $file_name = $path[4]; 
 
-        // 取得したファイル名で保存
-        $request->file('image')->storeAs('public/' . $dir, $file_name);
-
-        $path = 'storage/' .$dir . '/' . $file_name;
-
+        //s3の画像データを削除
+        Storage::disk('s3')->delete($file_name);
+    
         }else{
-            $path = $item->image;
+            $image_path = $item->image_path;
         }
 
         //商品編集するため、リクエストで渡されたIDを元にデータを取得
@@ -201,10 +203,7 @@ class ItemController extends Controller
             $item->kana_name = $request->kana_name;
             $item->quantity = $request->quantity;
             $item->type = $request->type;
-            /*if (isset($filename)) {
-                $item->image = $filename;
-            }*/
-            $item->image = $path;
+            $item->image_path = $image_path;
             $item->detail = $request->detail;
             $item->save();
         
@@ -221,18 +220,24 @@ class ItemController extends Controller
     //既存のレコード取得
     $item = Item::where('id', $request->id)->first();
 
-    //画像削除のためurlを「/」で分ける
-    $path = explode("/",$item->image_path,5);
-    //dd($path);
-    //ファイル文字列データを格納
-    $file_name = $path[4]; 
-    //dd($file_name);
-    
-    //s3の画像データを削除
-    Storage::disk('s3')->delete($file_name);
+    //画像がNULLの場合はDBのデータのみ削除
+    if(is_null($item->image_path)){
+        //商品データを削除
+        $item->delete();
+    }else{
+        //画像がある場合、s3のデータ削除のためurlを「/」で分ける
+        $path = explode("/",$item->image_path,5);
+        //dd($path);
+        //ファイル文字列データを格納
+        $file_name = $path[4]; 
+        //dd($file_name);
 
-    //商品データを削除
-    $item->delete();
+        //s3の画像データを削除
+        Storage::disk('s3')->delete($file_name);
+    
+        //商品データを削除
+        $item->delete();
+    }
 
     return redirect('/items');
     }
