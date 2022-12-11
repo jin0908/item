@@ -66,7 +66,7 @@
                                     <td>{{ $item->name }}</td>
                                     <td>{{ $item->quantity }}</td>
                                     <td>{{ config("type.$item->type") }}</td>
-                                    <td><img src ="{{ $item->image_path }}" class="img-responsive" width="100" style="border: solid 1px #777777;"></td>
+                                    <td><img src ="https://s3-ap-northeast-1.amazonaws.com/item-bundle/{{ $item->image_path }}" class="img-responsive" width="100" style="border: solid 1px #777777;"></td>
                                     <td>{{ date("Y-m-d", strtotime($item->created_at)) }}</td>
                                     <td>{{ date("Y-m-d", strtotime($item->updated_at)) }}</td>
                                     <td><a href="{{ url('items/edit/'.$item->id) }}">>>詳細・編集</a></td>
