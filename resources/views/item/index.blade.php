@@ -40,7 +40,7 @@
                                         <input type="submit" value="並び替え">
                                     </form>
                                 </div>
-                                <a href="{{ url('items/add') }}" class="btn btn-primary">商品登録</a>
+                                <a style="width:200px;" href="{{ url('items/add') }}" class="btn btn-warning">商品登録</a>
                             </div>
                         </div>
                     </div>
@@ -69,7 +69,7 @@
                                     <td><img src ="https://s3-ap-northeast-1.amazonaws.com/item-bundle/{{ $item->image_path }}" class="img-responsive" width="100" style="border: solid 1px #777777;"></td>
                                     <td>{{ date("Y-m-d", strtotime($item->created_at)) }}</td>
                                     <td>{{ date("Y-m-d", strtotime($item->updated_at)) }}</td>
-                                    <td><a href="{{ url('items/edit/'.$item->id) }}">>>詳細・編集</a></td>
+                                    <td><a href="{{ url('items/edit/'.$item->id) }}" class="btn btn-outline-dark">詳細・編集</a></td>
                                 </tr>
                             @endforeach 
                         </tbody>
