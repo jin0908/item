@@ -57,7 +57,7 @@ class ItemController extends Controller
         //画像のフルパスを取得
         $image_path = Storage::disk('s3')->url($path);
 
-        
+        //dd($path);
         //画像がない場合
         }else{
             $path = null;
@@ -175,15 +175,10 @@ class ItemController extends Controller
         $image = $request->file('image');
         //現在のファイルのデータを取得
         $item = Item::where('id', '=', $request->id)->first();
-        //ファイルの文字列データを「/」で分ける
-        $str = explode("/", $item->image);
-        //dd($str);
-        //ファイル文字列データを格納
-        $file_name = $str[2];
+        
         //画像を変更する場合、現在のファイルを削除
-        //dd($file_name);
         if (isset($image)) {
-        Storage::disk('public')->delete('image/' . $file_name);
+        Storage::disk('s3')->delete('todo_item', $image, 'public');
         
         // ディレクトリ名
         $dir = 'image';
@@ -225,18 +220,18 @@ class ItemController extends Controller
     {
     //既存のレコード取得
     $item = Item::where('id', $request->id)->first();
-    
 
-    //画像削除
-    //ファイルの文字列データを「/」で分ける
-    $str = explode("/", $item->image);
-    //dd($str);
+    //画像削除のためurlを「/」で分ける
+    $path = explode("/",$item->image_path,5);
+    //dd($path);
     //ファイル文字列データを格納
-    $file_name = $str[2];
-    //画像データを削除
-    Storage::disk('public')->delete('image/' . $file_name);
+    $file_name = $path[4]; 
+    //dd($file_name);
     
-    //データを削除
+    //s3の画像データを削除
+    Storage::disk('s3')->delete($file_name);
+
+    //商品データを削除
     $item->delete();
 
     return redirect('/items');
