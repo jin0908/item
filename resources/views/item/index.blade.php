@@ -34,8 +34,8 @@
                                             <option value="kana_name">名前順</option>
                                             <option value="asc">個数（昇順）</option>
                                             <option value="desc">個数（降順）</option>                            
-                                            <option value="created_at">登録日順</option>
-                                            <option value="updated_at">更新日順</option>
+                                            <option value="created_at">初入荷日順</option>
+                                            <option value="updated_at">補充日順</option>
                                         </select>
                                         <input type="submit" value="並び替え">
                                     </form>

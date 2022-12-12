@@ -129,11 +129,11 @@ class ItemController extends Controller
         } elseif ($sort === 'desc'){
             $items = Item::orderBy('quantity', 'desc')->get();    
         
-         //登録日順
+         //初入荷日順
         } elseif ($sort === 'created_at'){
             $items = Item::orderBy('created_at','desc')->get();
 
-        //更新日順
+        //補充日順
         }else {
             $items = Item::orderBy('updated_at','desc')->get();
         }       
